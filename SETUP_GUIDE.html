@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pogy Bot Setup Guide</title>
+  <style>
+    :root {
+      --bg: #08111b;
+      --panel: #101c29;
+      --panel-2: #152435;
+      --text: #e8f0f8;
+      --muted: #95abc0;
+      --accent: #3cb9ff;
+      --accent-2: #79e2ff;
+      --border: rgba(140, 190, 255, 0.18);
+      --good: #49d17d;
+      --warn: #ffca57;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(60, 185, 255, 0.18), transparent 30%),
+        linear-gradient(180deg, #07101a 0%, #0b1521 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+
+    .hero,
+    .card {
+      background: linear-gradient(180deg, rgba(18, 30, 44, 0.96), rgba(12, 21, 32, 0.96));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    }
+
+    .hero {
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    p, li {
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      padding: 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(60, 185, 255, 0.12);
+      color: var(--accent-2);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .code {
+      background: #071018;
+      border: 1px solid rgba(100, 180, 255, 0.12);
+      border-radius: 16px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      color: #dff6ff;
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    ol, ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .good {
+      color: var(--good);
+      font-weight: 700;
+    }
+
+    .warn {
+      color: var(--warn);
+      font-weight: 700;
+    }
+
+    .footer {
+      margin-top: 28px;
+      font-size: 14px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 32px;
+      }
+
+      .hero,
+      .card {
+        padding: 20px;
+        border-radius: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <p class="eyebrow">Pogy Bot Deployment Guide</p>
+      <h1>Simple Setup Guide</h1>
+      <p>
+        Yeh guide easy Hinglish me hai. Isme dashboard ko <span class="good">Vercel</span> par aur
+        bot ko <span class="good">Pterodactyl</span> par kaise chalana hai woh step by step samjhaya gaya hai.
+      </p>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <span class="badge">Dashboard</span>
+        <h2>Vercel me kya jayega</h2>
+        <ul>
+          <li>Sirf <code>dashboard</code> folder host karna hai.</li>
+          <li>Vercel project root <code>dashboard</code> hona chahiye.</li>
+          <li>Login, dashboard UI, aur API routes yahin chalenge.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="badge">Bot</span>
+        <h2>Pterodactyl me kya jayega</h2>
+        <ul>
+          <li>Poora bot project upload karna hai.</li>
+          <li>Main start file <code>index.js</code> hi rahegi.</li>
+          <li>Bot API same process ke andar chalegi.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card section">
+      <span class="badge">Step 1</span>
+      <h2>Vercel Setup</h2>
+      <ol>
+        <li>GitHub repo ko Vercel se import karo.</li>
+        <li>Project root directory <code>dashboard</code> set karo.</li>
+        <li>Build command <code>npm run build</code> rakho.</li>
+        <li>Output directory <code>dist</code> rakho.</li>
+      </ol>
+
+      <h3 style="margin-top:20px;">Vercel env values</h3>
+      <div class="code">DISCORD_CLIENT_ID=1489584892852441171
+DISCORD_CLIENT_SECRET=YOUR_CLIENT_SECRET
+DISCORD_BOT_TOKEN=YOUR_BOT_TOKEN
+MONGODB_URI=YOUR_MONGODB_URI
+NEXTAUTH_SECRET=CHANGE_THIS_TO_LONG_RANDOM_SECRET
+DASHBOARD_PUBLIC_URL=https://pogy-showcase.vercel.app
+BOT_API_BASE_URL=http://n3.nexcloud.in:2053
+DASHBOARD_BOT_STATUS_URL=http://n3.nexcloud.in:2053
+SUPPORT_URL=https://discord.gg/codexdev
+GUIDE_URL=https://codexdevs.in</div>
+    </section>
+
+    <section class="card section">
+      <span class="badge">Step 2</span>
+      <h2>Discord Developer Portal Setup</h2>
+      <ol>
+        <li>Discord Developer Portal kholo.</li>
+        <li>Apni application select karo.</li>
+        <li>OAuth2 redirect URL me yeh add karo:</li>
+      </ol>
+      <div class="code">https://pogy-showcase.vercel.app/api/auth/callback/discord</div>
+      <p style="margin-top:14px;">
+        Agar yeh redirect URL sahi nahi hoga, login white page ya fail ho jayega.
+      </p>
+    </section>
+
+    <section class="card section">
+      <span class="badge">Step 3</span>
+      <h2>Pterodactyl Bot Setup</h2>
+      <ol>
+        <li>Bot files Pterodactyl server me upload karo.</li>
+        <li>Startup command ya install command me dependencies install karvao.</li>
+        <li>Bot env set karo.</li>
+        <li>Bot run karo.</li>
+      </ol>
+
+      <h3 style="margin-top:20px;">Bot env values</h3>
+      <div class="code">DISCORD_TOKEN=YOUR_BOT_TOKEN
+DISCORD_BOT_TOKEN=YOUR_BOT_TOKEN
+DISCORD_CLIENT_ID=1489584892852441171
+DISCORD_CLIENT_SECRET=YOUR_CLIENT_SECRET
+BOT_PREFIX=?
+BOT_OWNERS=1434858158618054756,1252101579855630346
+MONGODB_URI=YOUR_MONGODB_URI
+LAVALINK_SEARCH_ENGINE=youtube
+LAVALINK_RESUME=true
+LAVALINK_RESUME_TIMEOUT=60
+LAVALINK_NODE_NAME=main
+LAVALINK_NODE_URL=lava-v4.millohost.my.id:443
+LAVALINK_NODE_AUTH=YOUR_LAVALINK_AUTH
+LAVALINK_NODE_SECURE=true
+WEBHOOK_URL=YOUR_WEBHOOK_URL
+SUPPORT_URL=https://discord.gg/codexdev
+GUIDE_URL=https://codexdevs.in
+TOTAL_SHARDS=auto
+SHARDS_PER_CLUSTER=4
+TOTAL_CLUSTERS=auto
+STATUS_SERVER_PORT=2053
+STATUS_SERVER_HOST=0.0.0.0</div>
+
+      <h3 style="margin-top:20px;">Run command</h3>
+      <div class="code">npm install && npm run start:bot</div>
+    </section>
+
+    <section class="card section">
+      <span class="badge">Step 4</span>
+      <h2>Bot API test kaise karna hai</h2>
+      <p>Pehle yeh 3 URLs browser me check karo:</p>
+      <div class="code">http://n3.nexcloud.in:2053/
+http://n3.nexcloud.in:2053/stats
+http://n3.nexcloud.in:2053/guilds</div>
+      <ul style="margin-top:14px;">
+        <li>Agar yeh open ho rahe hain to bot API live hai.</li>
+        <li>Agar yeh open nahi ho rahe to dashboard bot se connect nahi karega.</li>
+      </ul>
+    </section>
+
+    <section class="card section">
+      <span class="badge">Important</span>
+      <h2>Simple samajh lo</h2>
+      <ul>
+        <li>Vercel sirf dashboard dikhayega aur login handle karega.</li>
+        <li>Pterodactyl bot ko chalata rahega.</li>
+        <li>Dashboard bot se <code>http://n3.nexcloud.in:2053</code> ke through baat karega.</li>
+        <li>Bot API public hona zaroori hai.</li>
+      </ul>
+    </section>
+
+    <section class="card section">
+      <span class="badge">Warning</span>
+      <h2>Public karne se pehle</h2>
+      <ul>
+        <li>Bot token rotate karo.</li>
+        <li>Client secret rotate karo.</li>
+        <li>MongoDB password rotate karo.</li>
+        <li>Webhook URL rotate karo.</li>
+      </ul>
+      <p class="warn" style="margin-top:14px;">
+        Purane exposed secrets ke saath public GitHub push mat karo.
+      </p>
+    </section>
+
+    <p class="footer">Made for quick setup of Pogy Bot + Zenith Dashboard</p>
+  </div>
+</body>
+</html>
