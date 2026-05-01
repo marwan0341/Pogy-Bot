@@ -29,8 +29,8 @@ export default function Sidebar({ user, selectedGuild, onSelectGuild, activePage
     <nav className={`sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
       <div className="sidebar-header dashboard-sidebar-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
         <div className="sidebar-brand-block">
-          <p className="sidebar-kicker">PogyClient Platform</p>
-          <h2 className="brand-text-glow">ZENITH</h2>
+          <p className="sidebar-kicker">CVX Platform</p>
+          <h2 className="brand-text-glow">CVX VOID</h2>
         </div>
         <button 
           className="btn-icon mobile-only" 
