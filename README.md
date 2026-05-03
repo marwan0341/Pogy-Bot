@@ -163,49 +163,35 @@ Production example:
 
 - `https://dashboard.example.com/api/auth/callback/discord`
 
-## Dashboard Deployment
+## Production Split
 
-### Important Note About Vercel
+This repo is now arranged to support the split you asked for:
 
-This dashboard currently uses a custom Node server in [dashboard/server.js](dashboard/server.js), plus its own API/auth routes. Because of that, it is **not a drop-in static Vercel frontend** in its current form.
+- Dashboard on Vercel
+- Bot on Pterodactyl
 
-If you want the smoothest production deployment right now, host the dashboard on a Node-friendly platform such as:
+The dashboard frontend is built with Vite, and the dashboard auth/data endpoints are available through Vercel serverless routing in:
 
-- Railway
-- Render
-- VPS
-- Pterodactyl
-- PM2 on your own server
+- [dashboard/api/[...route].js](dashboard/api/[...route].js)
+- [dashboard/vercel.json](dashboard/vercel.json)
 
-### If You Still Want To Use Vercel
+The bot stays as the long-running Discord process and keeps exposing the bot API on port `3001`.
 
-You have two options:
+## Dashboard On Vercel
 
-1. Use Vercel only after converting the custom dashboard server/API routes into Vercel serverless functions.
-2. Keep the current dashboard server and deploy it on a Node host instead of Vercel.
+### What Vercel Hosts
 
-So for this current repo state, the practical answer is:
+Vercel will host:
 
-- Vercel is **not the recommended host** for the dashboard yet
-- a Node host is the correct deployment target for the current merged dashboard
+- the React dashboard frontend
+- Discord login callback handling
+- session handling
+- guild/config API routes
+- server-to-server calls from the dashboard API to MongoDB and the bot API
 
-### Recommended Dashboard Hosting Setup
+### Vercel Environment Variables
 
-1. Deploy the repo or dashboard service to a Node-capable host.
-2. Install dependencies:
-
-```bash
-npm install
-npm --prefix dashboard install
-```
-
-3. Build the dashboard:
-
-```bash
-npm run build:dashboard
-```
-
-4. Set env vars:
+Add these environment variables in your Vercel project:
 
 - `DISCORD_CLIENT_ID`
 - `DISCORD_CLIENT_SECRET`
@@ -216,11 +202,35 @@ npm run build:dashboard
 - `BOT_API_BASE_URL`
 - `DASHBOARD_BOT_STATUS_URL`
 
-5. Start the dashboard:
+Recommended production values:
 
-```bash
-npm run start:dashboard
+```env
+DASHBOARD_PUBLIC_URL=https://your-dashboard.vercel.app
+BOT_API_BASE_URL=https://bot-api.yourdomain.com
+DASHBOARD_BOT_STATUS_URL=https://bot-api.yourdomain.com
 ```
+
+### Vercel Deploy Steps
+
+1. Push the repository to GitHub.
+2. Import the repo into Vercel.
+3. Set the project root to `dashboard`.
+4. Confirm these settings:
+   - Framework preset: `Vite`
+   - Build command: `npm run build`
+   - Output directory: `dist`
+5. Add all required environment variables.
+6. Deploy.
+
+### Discord OAuth Redirect For Vercel
+
+In the Discord Developer Portal, add this redirect URL:
+
+- `https://your-dashboard.vercel.app/api/auth/callback/discord`
+
+If you connect a custom domain, also add:
+
+- `https://dashboard.yourdomain.com/api/auth/callback/discord`
 
 ## Bot Hosting Setup
 
@@ -252,6 +262,7 @@ npm install
 - `MONGODB_URI`
 - `LAVALINK_NODE_URL`
 - `LAVALINK_NODE_AUTH`
+- `PORT` if your panel or reverse proxy needs a custom dashboard/status port mapping
 
 4. Start the bot:
 
@@ -259,17 +270,43 @@ npm install
 npm run start:bot
 ```
 
-5. Make sure port `3001` is reachable by your dashboard deployment if you want live dashboard sync.
+5. Make sure the bot API is reachable from Vercel.
+
+The dashboard must be able to reach these bot endpoints:
+
+- `GET /guilds`
+- `POST /guilds/:guildId/cache`
+- `GET /guilds/:guildId/music`
+
+### Pterodactyl Notes
+
+For the split deployment to work cleanly:
+
+- keep the bot running continuously on Pterodactyl
+- expose the bot API publicly through a domain or reverse proxy
+- point that public URL into:
+  - `BOT_API_BASE_URL`
+  - `DASHBOARD_BOT_STATUS_URL`
+
+Example:
+
+- Bot panel machine runs the process
+- Nginx or a proxy exposes `https://bot-api.yourdomain.com`
+- Vercel dashboard calls that URL from serverless functions
+
+If your bot API is not publicly reachable, the dashboard can still load login and session pages, but live guild sync, music status, and config pushback to the bot will fail.
 
 ## Recommended Production Split
 
 If you want the cleanest production setup:
 
-- Host the bot on a bot-friendly service or VPS
-- Host the dashboard on a Node-capable web host
-- Set `BOT_API_BASE_URL` to the bot API public URL
-- Set `DASHBOARD_BOT_STATUS_URL` to the same bot API public URL
-- Set `DASHBOARD_PUBLIC_URL` to the public dashboard URL
+- Host the dashboard on Vercel
+- Host the bot on Pterodactyl
+- Put the bot API behind a public domain such as `https://bot-api.yourdomain.com`
+- Set `BOT_API_BASE_URL` to that bot API URL
+- Set `DASHBOARD_BOT_STATUS_URL` to that same bot API URL
+- Set `DASHBOARD_PUBLIC_URL` to the public Vercel dashboard URL
+- Add the Vercel callback URL in the Discord Developer Portal
 
 ## Publish Checklist
 
@@ -280,6 +317,7 @@ Before pushing this repo to GitHub:
 3. Rotate any old secrets that were previously exposed.
 4. Confirm your Discord OAuth redirect URL matches your real dashboard domain.
 5. Confirm your dashboard can reach the bot API URL.
+6. Confirm the Vercel project root is `dashboard`.
 
 ## Security Note
 

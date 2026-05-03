@@ -4,6 +4,28 @@ const cors = require("cors");
 const settings = require("../settings");
 const Telemetry = require("../toolkit/telemetry");
 
+function getStatusServerPort() {
+  const candidates = [
+    process.env.STATUS_SERVER_PORT,
+    process.env.BOT_STATUS_PORT,
+    process.env.PORT,
+    process.env.SERVER_PORT
+  ];
+
+  for (const candidate of candidates) {
+    const parsed = Number(candidate);
+    if (Number.isInteger(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return 3001;
+}
+
+function getStatusServerHost() {
+  return process.env.STATUS_SERVER_HOST || "0.0.0.0";
+}
+
 async function startLaunchpad() {
   const manager = new Cluster.ClusterManager(`${__dirname}/shard.js`, {
     totalShards: settings.Shards.totalShards,
@@ -67,6 +89,8 @@ function sleep(ms) {
 }
 
 function startStatusServer(manager) {
+  const statusPort = getStatusServerPort();
+  const statusHost = getStatusServerHost();
   const app = express();
   app.use(express.json({ limit: "256kb" }));
   app.use(cors({ origin: "*" }));
@@ -182,8 +206,8 @@ function startStatusServer(manager) {
     }
   });
 
-  app.listen(3001, () => {
-    Telemetry.log("Status server listening on port 3001", "shard");
+  app.listen(statusPort, statusHost, () => {
+    Telemetry.log(`Status server listening on ${statusHost}:${statusPort}`, "shard");
   });
 }
 
