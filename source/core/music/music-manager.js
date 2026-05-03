@@ -119,9 +119,8 @@ class MusicManager {
       );
       await this.sendPlayerNotice(player, [
         `# ${this.client.config.Client.emoji.cross} Queue Ended`,
-        "The queue is empty, so I left the voice channel.",
+        "The queue is empty.",
       ]);
-      await player.destroy().catch(() => {});
     });
 
     this.kazagumo.on("playerClosed", async (player) => {
@@ -426,12 +425,8 @@ class MusicManager {
     const voiceChannel = guild.channels.cache.get(botChannelId);
     const nonBots = voiceChannel?.members?.filter((member) => !member.user.bot) || [];
     if (nonBots.size === 0) {
-      this.capturePlayerState(player, null, { event: "closed", endedAt: Date.now() });
-      await this.sendPlayerNotice(player, [
-        `# ${this.client.config.Client.emoji.cross} Left Voice`,
-        "Everyone left the voice channel, so I cleared the player.",
-      ]);
-      await this.destroy(guild.id);
+      // Stay in voice channel even when empty
+      return;
     }
   }
 }
